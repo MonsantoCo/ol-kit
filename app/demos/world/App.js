@@ -21,6 +21,7 @@ import { fromLonLat } from 'ol/proj'
 import olFeature from 'ol/Feature'
 import olGeomPoint from 'ol/geom/Point'
 import olSourceVector from 'ol/source/Vector'
+import GeoserverLayer from '../../../src/classes/GeoserverLayer'
 
 class App extends React.Component {
   onMapInit = async (map) => {
@@ -39,9 +40,14 @@ class App extends React.Component {
 
     map.addLayer(layer)
 
-    const dataLayer = await loadDataLayer(map, 'https://data.nasa.gov/api/geospatial/7zbq-j77a?method=export&format=KML')
+    // http://localhost:8600/geoserver/topp/states/ows?SERVICE=WMS
+    GeoserverLayer.fromURI('http://localhost:8600/geoserver/topp/states/ows').then(layer => {
+      map.addLayer(layer)
+    })
 
-    dataLayer.getSource().getFeatures().forEach(f => f.set('title', f.get('name')))
+    //const dataLayer = await loadDataLayer(map, 'https://data.nasa.gov/api/geospatial/7zbq-j77a?method=export&format=KML')
+
+    //dataLayer.getSource().getFeatures().forEach(f => f.set('title', f.get('name')))
 
     window.map = map
   }
